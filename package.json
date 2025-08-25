@@ -1,7 +1,7 @@
 {
   "name": "swiggy",
   "version": "1.0.0",
-  "main": "script.js",
+  "main": "src/script.js",
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html --public-url ./",
