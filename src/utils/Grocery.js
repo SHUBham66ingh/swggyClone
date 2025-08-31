@@ -1,4 +1,4 @@
-export const GroceryGridCard =   [
+export const GrocerGridCard =   [
                                                 
     {
     "id": "64a7a4ef02878f0001e7e0be",

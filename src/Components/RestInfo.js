@@ -1,45 +1,56 @@
-export default function RestInfo({ restData }) {
-  return (
-    <>
-      <div className="flex w-full justify-between mb-4 pb-4 hover:shadow-lg transition-all duration-300 rounded-2xl bg-white p-4">
-        {/* Left section - Info */}
-        <div className="w-[70%] pr-4">
-          <p className="text-2xl text-gray-800 font-bold mb-1">{restData?.name}</p>
-          <p className="text-lg text-gray-700 font-medium">
-            {"₹" +
-              ("defaultPrice" in restData
-                ? restData?.defaultPrice / 100
-                : restData?.price / 100)}
-          </p>
-          <div className="flex items-center gap-1 mt-1">
-            <span className="text-green-700 font-semibold">
-              {restData?.ratings?.aggregatedRating?.rating}
-            </span>
-            <span className="text-gray-500 text-sm">
-              {"(" + restData?.ratings?.aggregatedRating?.ratingCountV2 + ")"}
-            </span>
-          </div>
-          <p className="mt-2 text-gray-600 leading-relaxed text-sm">
-            {restData?.description}
-          </p>
-        </div>
+import { useState } from "react"
+import {addItems, IncrementItems, DecrementItems} from "../Stored/CartSlicer"
+import { useDispatch, useSelector } from "react-redux";
 
-        {/* Right section - Image & Button */}
-        <div className="w-[25%] relative flex justify-center">
-          <img
-            className="w-full h-36 object-cover rounded-2xl shadow-md"
-            src={
-              "https://media-assets.swiggy.com/swiggy/image/upload/" +
-              restData.imageId
-            }
-            alt={restData?.name}
-          />
-          <button className="absolute bottom-2 bg-white text-green-600 border border-green-500 rounded-full px-5 py-1.5 text-sm font-semibold shadow-md hover:bg-green-50 transition-all">
-            ADD
-          </button>
+export default function RestInfo({restData}){
+  
+  
+
+  const dispatch = useDispatch();
+  const items = useSelector(state=>state.cartslice.items);
+
+  const element = items.find(item=>item.id===restData.id);
+  const count = element? element.quantity:0;
+
+  function handleAdditems(){
+    dispatch(addItems(restData));
+  }
+
+  function handleIncrementItems(){
+    dispatch(IncrementItems(restData));
+  }
+
+  function handleDecrementItems(){
+    dispatch(DecrementItems(restData));
+  }
+
+    return (
+         <>
+        <div className="flex w-full justify-between mb-2 pb-2">
+          <div className="w-[70%]">
+            <p className="text-2xl text-gray-700 font-semibold mb-1">{restData?.name}</p>
+            <p className="text-xl">{"₹"+ ("defaultPrice" in restData ? restData?.defaultPrice/100:restData?.price/100)}</p>
+            <span className="text-green-700">{restData?.ratings?.aggregatedRating?.rating}</span>
+            <span>{"("+restData?.ratings?.aggregatedRating?.ratingCountV2+")"}</span>
+            <p>
+                {restData?.description}
+            </p>    
+          </div>
+          <div className="w-[20%] relative h-42">
+            <img className="w-60 h-36 object-cover rounded-3xl" src={"https://media-assets.swiggy.com/swiggy/image/upload/"+restData.imageId}></img>
+          {
+            (count==0)?(<button className="absolute bottom-1 left-20 rounded-xl text-2xl text-green-600 px-6 py-2 shadow-md border border-white bg-white" onClick={()=>handleAdditems()}>ADD</button>):(
+              <div className="absolute bottom-1 left-20 flex gap-3 text-2xl  text-green-600 px-6 py-2 shadow-md border border-white bg-white rounded-2xl">
+                <button onClick={()=>handleDecrementItems()}>-</button>
+                <span>{count}</span>
+                <button onClick={()=> handleIncrementItems()}>+</button>
+              </div>
+            )
+          }  
+          </div>
         </div>
-      </div>
-      <hr className="mb-6 mt-2 border-gray-200" />
-    </>
-  );
+        <hr className="mb-6 mt-2"></hr>
+        </>
+
+    )
 }
